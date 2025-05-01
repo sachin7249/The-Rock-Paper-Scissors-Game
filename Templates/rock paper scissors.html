@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rock Paper Scissors 🎮</title>
+  <style>
+    :root {
+      --bg-color: #0f0f0f;
+      --text-color: #fff;
+      --btn-bg: #00ff99;
+      --btn-hover: #ff00ff;
+      --button-shadow: 0 0 10px #00ff99, 0 0 20px #ff00ff;
+    }
+
+    body.dark {
+      --bg-color: #0f0f0f;
+      --text-color: #fff;
+      --btn-bg: #ff00ff;
+      --btn-hover: #00ff99;
+      --button-shadow: 0 0 10px #ff00ff, 0 0 20px #00ff99;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      text-align: center;
+      padding: 50px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-family: 'Arial', sans-serif;
+      color: var(--btn-bg);
+      text-shadow: 0 0 10px #ff00ff, 0 0 20px #00ff99;
+    }
+
+    .choices {
+      margin: 30px 0;
+    }
+
+    button {
+      font-size: 2rem;
+      margin: 0 15px;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 15px;
+      background-color: var(--btn-bg);
+      color: var(--text-color);
+      cursor: pointer;
+      box-shadow: var(--button-shadow);
+      transition: transform 0.2s, background-color 0.3s, box-shadow 0.3s;
+    }
+
+    button:hover:enabled {
+      background-color: var(--btn-hover);
+      transform: scale(1.1);
+      box-shadow: 0 0 15px #ff00ff, 0 0 25px #00ff99;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .result, .score {
+      margin-top: 25px;
+      font-size: 1.5rem;
+      color: #00ff99;
+    }
+
+    .result span {
+      font-weight: bold;
+    }
+
+    .toggle {
+      margin-top: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      background: none;
+      border: 2px solid var(--btn-bg);
+      padding: 10px 20px;
+      border-radius: 15px;
+      color: var(--text-color);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .toggle:hover {
+      background-color: var(--btn-hover);
+      color: white;
+    }
+
+    .loader {
+      font-size: 1.2rem;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0% { opacity: 0.2; }
+      50% { opacity: 1; }
+      100% { opacity: 0.2; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Rock 🪨 Paper 📄 Scissors ✂️</h1>
+
+  <div class="choices">
+    <button id="rock">🪨 Rock</button>
+    <button id="paper">📄 Paper</button>
+    <button id="scissors">✂️ Scissors</button>
+  </div>
+
+  <div class="result" id="result">Make your move!</div>
+  <div class="score" id="score">You: 0 | Computer: 0</div>
+
+  <button class="toggle" onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
+
+  <script>
+    const choices = ['Rock', 'Paper', 'Scissors'];
+    let userScore = 0;
+    let computerScore = 0;
+    let isWaiting = false;
+
+    document.getElementById("rock").addEventListener("click", function() {
+      play("Rock");
+    });
+    document.getElementById("paper").addEventListener("click", function() {
+      play("Paper");
+    });
+    document.getElementById("scissors").addEventListener("click", function() {
+      play("Scissors");
+    });
+
+    function play(userChoice) {
+      if (isWaiting) return;
+
+      isWaiting = true;
+      document.getElementById("result").innerHTML = '<span class="loader">🤖 Computer is thinking...</span>';
+      disableButtons(true);
+
+      setTimeout(function() {
+        const computerChoice = choices[Math.floor(Math.random() * 3)];
+        let result = "";
+
+        if (userChoice === computerChoice) {
+          result = "It's a draw!";
+        } else if (
+          (userChoice === 'Rock' && computerChoice === 'Scissors') ||
+          (userChoice === 'Paper' && computerChoice === 'Rock') ||
+          (userChoice === 'Scissors' && computerChoice === 'Paper')
+        ) {
+          userScore++;
+          result = "You win! 🎉";
+        } else {
+          computerScore++;
+          result = "Computer wins! 💻";
+        }
+
+        document.getElementById("result").innerHTML = `
+          You chose <span>${userChoice}</span> —
+          Computer chose <span>${computerChoice}</span><br>${result}
+        `;
+        document.getElementById("score").textContent = `You: ${userScore} | Computer: ${computerScore}`;
+        disableButtons(false);
+        isWaiting = false;
+      }, 1500);
+    }
+
+    function disableButtons(state) {
+      document.getElementById("rock").disabled = state;
+      document.getElementById("paper").disabled = state;
+      document.getElementById("scissors").disabled = state;
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+    }
+  </script>
+
+</body>
+</html>
